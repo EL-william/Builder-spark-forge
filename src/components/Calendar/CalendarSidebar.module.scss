@@ -168,11 +168,12 @@
   }
 
   &.currentMonth {
-    color: #111827;
+    color: #ffffff;
   }
 
   &.otherMonth {
-    color: #9ca3af;
+    color: #ffffff;
+    opacity: 0.6;
   }
 
   &.today {

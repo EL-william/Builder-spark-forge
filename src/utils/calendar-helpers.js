@@ -27,17 +27,27 @@ export function getFirstDayOfMonth(year, month) {
  * Get all days for a calendar month view (including previous/next month days)
  * @param {number} year - The year
  * @param {number} month - The month (0-11)
+ * @param {number} startDay - First day of week (0 = Sunday, 1 = Monday)
  * @returns {Array<Date>} Array of Date objects for the calendar grid
  */
-export function getCalendarDays(year, month) {
+export function getCalendarDays(year, month, startDay = 1) {
   const firstDay = getFirstDayOfMonth(year, month);
   const daysInMonth = getDaysInMonth(year, month);
   const daysInPrevMonth = getDaysInMonth(year, month - 1);
 
   const days = [];
 
+  // Calculate how many days from previous month to show
+  const dayOfWeek = firstDay;
+  const daysToSubtract =
+    startDay === 1
+      ? dayOfWeek === 0
+        ? 6
+        : dayOfWeek - 1 // Monday start
+      : dayOfWeek; // Sunday start
+
   // Add days from previous month
-  for (let i = firstDay - 1; i >= 0; i--) {
+  for (let i = daysToSubtract - 1; i >= 0; i--) {
     const prevMonth = month === 0 ? 11 : month - 1;
     const prevYear = month === 0 ? year - 1 : year;
     days.push(new Date(prevYear, prevMonth, daysInPrevMonth - i));

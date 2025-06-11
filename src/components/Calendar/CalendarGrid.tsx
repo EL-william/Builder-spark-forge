@@ -13,7 +13,7 @@ import { CalendarEvent } from "@/lib/types";
 import { WeeklyView } from "./WeeklyView";
 import styles from "./CalendarGrid.module.scss";
 
-const DAYS = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 const MONTHS = [
   "Январь",
   "Февраль",
@@ -58,7 +58,10 @@ export function CalendarGrid() {
   // Get first day of the month and calculate how many days from previous month to show
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
   const startDate = new Date(firstDayOfMonth);
-  startDate.setDate(startDate.getDate() - firstDayOfMonth.getDay());
+  // Adjust for Monday start (getDay() returns 0 for Sunday, 1 for Monday, etc.)
+  const dayOfWeek = firstDayOfMonth.getDay();
+  const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  startDate.setDate(startDate.getDate() - daysToSubtract);
 
   // Generate calendar days
   const calendarDays = [];

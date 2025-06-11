@@ -21,7 +21,7 @@ import { TaskModal } from "@/components/Tasks/TaskModal";
 import { cn } from "@/lib/utils";
 import styles from "./CalendarSidebar.module.scss";
 
-const DAYS_SHORT = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+const DAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 const MONTHS = [
   "Январь",
   "Февраль",
@@ -86,7 +86,10 @@ export function CalendarSidebar() {
   const currentYear = miniCalendarDate.getFullYear();
   const firstDay = new Date(currentYear, currentMonth, 1);
   const startDate = new Date(firstDay);
-  startDate.setDate(startDate.getDate() - firstDay.getDay());
+  // Adjust for Monday start (getDay() returns 0 for Sunday, 1 for Monday, etc.)
+  const dayOfWeek = firstDay.getDay();
+  const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  startDate.setDate(startDate.getDate() - daysToSubtract);
 
   const calendarDays = [];
   const currentDay = new Date(startDate);
