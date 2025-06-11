@@ -81,7 +81,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 16px;
-  background-color: #ffffff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .miniCalendarHeader {
@@ -94,7 +94,7 @@
 .miniCalendarTitle {
   font-size: 14px;
   font-weight: 500;
-  color: #111827;
+  color: #ffffff;
 }
 
 .miniCalendarNav {
@@ -117,13 +117,13 @@
   cursor: pointer;
 
   &:hover {
-    background-color: #f3f4f6;
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   svg {
     height: 16px;
     width: 16px;
-    color: #6b7280;
+    color: #ffffff;
   }
 }
 
@@ -141,12 +141,13 @@
 
 .miniDayHeader {
   font-size: 11px;
-  color: #6b7280;
+  color: #ffffff;
   text-align: center;
   padding: 4px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  opacity: 0.8;
 }
 
 .miniDay {
@@ -164,7 +165,7 @@
   margin: 0 auto;
 
   &:hover {
-    background-color: #f3f4f6;
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   &.currentMonth {
@@ -177,20 +178,22 @@
   }
 
   &.today {
-    background-color: #2563eb;
-    color: #ffffff;
+    background-color: #ffffff;
+    color: #667eea;
+    font-weight: 600;
 
     &:hover {
-      background-color: #1d4ed8;
+      background-color: rgba(255, 255, 255, 0.9);
     }
   }
 
   &.selected {
-    background-color: #dbeafe;
-    color: #2563eb;
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-weight: 600;
 
     &:hover {
-      background-color: #bfdbfe;
+      background-color: rgba(255, 255, 255, 0.4);
     }
   }
 }
