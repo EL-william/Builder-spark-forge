@@ -241,7 +241,7 @@ export function CalendarGrid() {
 
             return (
               <div
-                key={`${weekIndex}-${dayIndex}`}
+                key={`${weekIndex}-${_dayIndex}`}
                 className={cn(
                   "min-h-[120px] p-2 border-r border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors relative",
                   !isCurrentMonth && "bg-gray-50",

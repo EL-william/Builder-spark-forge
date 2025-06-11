@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { Calendar, Clock, MapPin, Users, ChevronRight } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCalendar } from "@/lib/calendar-store";
 import { useTaskStore } from "@/lib/task-store";
