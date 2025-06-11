@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Layout/Navbar";
 import { CalendarGrid } from "@/components/Calendar/CalendarGrid";
+import { CalendarSidebar } from "@/components/Calendar/CalendarSidebar";
 import { EventModal } from "@/components/Calendar/EventModal";
 import { useAuth } from "@/lib/auth";
 
@@ -22,10 +23,13 @@ export default function Calendar() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <main className="p-6">
-        <CalendarGrid />
-        <EventModal />
-      </main>
+      <div className="flex">
+        <CalendarSidebar />
+        <main className="flex-1 p-6">
+          <CalendarGrid />
+          <EventModal />
+        </main>
+      </div>
     </div>
   );
 }

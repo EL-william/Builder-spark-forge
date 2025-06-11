@@ -6,6 +6,7 @@ import {
   UpdateEventInput,
   CalendarView,
 } from "./types";
+import { sampleEvents } from "./sample-data";
 
 interface CalendarStore {
   events: CalendarEvent[];
@@ -29,7 +30,7 @@ const generateId = () => Math.random().toString(36).substr(2, 9);
 export const useCalendar = create<CalendarStore>()(
   persist(
     (set, get) => ({
-      events: [],
+      events: sampleEvents,
       view: {
         type: "month",
         currentDate: new Date(),
