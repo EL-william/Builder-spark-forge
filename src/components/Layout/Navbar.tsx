@@ -30,12 +30,36 @@ export function Navbar() {
             <Menu className="h-5 w-5 text-gray-600" />
           </Button>
 
-          <Link to="/" className="flex items-center space-x-3">
+          <Link to="/calendar" className="flex items-center space-x-3">
             <Calendar className="h-6 w-6 text-gray-700" />
             <span className="text-xl text-gray-700 font-normal hidden sm:block">
               Calendar
             </span>
           </Link>
+
+          <div className="hidden md:flex items-center space-x-1 ml-8">
+            <Button
+              variant="ghost"
+              asChild
+              className="text-gray-700 hover:bg-gray-100"
+            >
+              <Link to="/dashboard">Панель</Link>
+            </Button>
+            <Button
+              variant="ghost"
+              asChild
+              className="text-gray-700 hover:bg-gray-100"
+            >
+              <Link to="/calendar">Календарь</Link>
+            </Button>
+            <Button
+              variant="ghost"
+              asChild
+              className="text-gray-700 hover:bg-gray-100"
+            >
+              <Link to="/settings">Настройки</Link>
+            </Button>
+          </div>
         </div>
 
         {/* Center section - Search */}
@@ -119,7 +143,7 @@ export function Navbar() {
                   size="sm"
                   className="mt-3 text-blue-600 border-blue-600 hover:bg-blue-50"
                 >
-                  Управление аккаунтом Google
+                  Управление аккау��том Google
                 </Button>
               </div>
 
