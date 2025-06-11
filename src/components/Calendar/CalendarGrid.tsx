@@ -10,6 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-store";
 import { CalendarEvent } from "@/lib/types";
+import { WeeklyView } from "./WeeklyView";
 
 const DAYS = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 const MONTHS = [
@@ -18,7 +19,7 @@ const MONTHS = [
   "Март",
   "Апрель",
   "Май",
-  "Июнь",
+  "Ию��ь",
   "Июль",
   "Август",
   "Сентябрь",
@@ -43,6 +44,11 @@ export function CalendarGrid() {
     setSelectedEvent,
   } = useCalendar();
   const [currentDate, setCurrentDate] = useState(view.currentDate);
+
+  // If weekly view is selected, render WeeklyView component
+  if (view.type === "week") {
+    return <WeeklyView />;
+  }
 
   const today = new Date();
   const currentMonth = currentDate.getMonth();
@@ -161,7 +167,15 @@ export function CalendarGrid() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="h-10 px-4">
-                <span className="mr-2">Месяц</span>
+                <span className="mr-2">
+                  {view.type === "month"
+                    ? "Месяц"
+                    : view.type === "week"
+                      ? "Неделя"
+                      : view.type === "day"
+                        ? "День"
+                        : "Год"}
+                </span>
                 <svg
                   className="h-4 w-4"
                   fill="none"
