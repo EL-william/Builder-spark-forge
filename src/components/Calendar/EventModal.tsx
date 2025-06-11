@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { X, Clock, MapPin, Trash2, Edit3, Users, Copy } from "lucide-react";
+import { X, Clock, MapPin, Trash2, Edit3, Repeat, Globe } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-store";
 import { CreateEventInput } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
+import { COMMON_TIMEZONES, getUserTimezone } from "@/lib/timezone-utils";
 
 const eventSchema = z.object({
   title: z.string().min(1, "Название обязательно"),
@@ -32,6 +33,12 @@ const eventSchema = z.object({
   endTime: z.string().optional(),
   allDay: z.boolean(),
   category: z.enum(["work", "personal", "meeting", "reminder", "other"]),
+  isRecurring: z.boolean(),
+  recurrenceFrequency: z
+    .enum(["daily", "weekly", "monthly", "yearly"])
+    .optional(),
+  recurrenceInterval: z.number().optional(),
+  timezone: z.string().optional(),
 });
 
 type EventForm = z.infer<typeof eventSchema>;
@@ -62,6 +69,8 @@ export function EventModal() {
     deleteEvent,
   } = useCalendar();
   const { toast } = useToast();
+  const [showRecurrenceOptions, setShowRecurrenceOptions] = useState(false);
+  const [showTimezoneOptions, setShowTimezoneOptions] = useState(false);
 
   const {
     register,
@@ -77,6 +86,10 @@ export function EventModal() {
       category: "personal",
       startDate: new Date(),
       endDate: new Date(),
+      isRecurring: false,
+      recurrenceFrequency: "weekly",
+      recurrenceInterval: 1,
+      timezone: getUserTimezone(),
     },
   });
 
@@ -299,6 +312,86 @@ export function EventModal() {
                           />
                           <span>{label}</span>
                         </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Recurring */}
+            <div className="flex items-start space-x-4">
+              <Repeat className="h-5 w-5 text-gray-400 mt-3" />
+              <div className="flex-1 space-y-3">
+                <div className="flex items-center space-x-3">
+                  <Switch
+                    id="isRecurring"
+                    checked={watch("isRecurring")}
+                    onCheckedChange={(checked) => {
+                      setValue("isRecurring", checked);
+                      setShowRecurrenceOptions(checked);
+                    }}
+                  />
+                  <Label htmlFor="isRecurring" className="text-sm">
+                    Повторяющееся событие
+                  </Label>
+                </div>
+
+                {watch("isRecurring") && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <Select
+                      value={watch("recurrenceFrequency")}
+                      onValueChange={(value) =>
+                        setValue("recurrenceFrequency", value as any)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">Ежедневно</SelectItem>
+                        <SelectItem value="weekly">Еженедельно</SelectItem>
+                        <SelectItem value="monthly">Ежемесячно</SelectItem>
+                        <SelectItem value="yearly">Ежегодно</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-gray-600">Каждые</span>
+                      <Input
+                        type="number"
+                        min="1"
+                        max="99"
+                        value={watch("recurrenceInterval")}
+                        onChange={(e) =>
+                          setValue(
+                            "recurrenceInterval",
+                            parseInt(e.target.value) || 1,
+                          )
+                        }
+                        className="w-16 text-center"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Timezone */}
+            <div className="flex items-start space-x-4">
+              <Globe className="h-5 w-5 text-gray-400 mt-3" />
+              <div className="flex-1">
+                <Select
+                  value={watch("timezone")}
+                  onValueChange={(value) => setValue("timezone", value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COMMON_TIMEZONES.map((tz) => (
+                      <SelectItem key={tz.id} value={tz.id}>
+                        {tz.label}
                       </SelectItem>
                     ))}
                   </SelectContent>

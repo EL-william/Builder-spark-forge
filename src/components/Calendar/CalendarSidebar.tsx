@@ -5,10 +5,19 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronRight as ChevronRightSmall,
+  CheckSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useCalendar } from "@/lib/calendar-store";
+import { useTaskStore } from "@/lib/task-store";
+import { TaskModal } from "@/components/Tasks/TaskModal";
 
 const DAYS_SHORT = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 const MONTHS = [
@@ -36,8 +45,10 @@ const categoryColors = [
 
 export function CalendarSidebar() {
   const { view, setView, setEventModalOpen } = useCalendar();
+  const { setTaskModalOpen, taskLists } = useTaskStore();
   const [miniCalendarDate, setMiniCalendarDate] = useState(new Date());
   const [isMyCalendarsExpanded, setIsMyCalendarsExpanded] = useState(true);
+  const [isTaskListsExpanded, setIsTaskListsExpanded] = useState(true);
   const [visibleCategories, setVisibleCategories] = useState<string[]>([
     "personal",
     "work",
@@ -101,13 +112,24 @@ export function CalendarSidebar() {
     <div className="w-64 bg-white h-full overflow-y-auto">
       {/* Create button */}
       <div className="p-6 pb-4">
-        <Button
-          onClick={() => setEventModalOpen(true)}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-14 text-base font-medium shadow-md hover:shadow-lg transition-all"
-        >
-          <Plus className="h-5 w-5 mr-3" />
-          Создать
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-14 text-base font-medium shadow-md hover:shadow-lg transition-all">
+              <Plus className="h-5 w-5 mr-3" />
+              Создать
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenuItem onClick={() => setEventModalOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Событие
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTaskModalOpen(true)}>
+              <CheckSquare className="h-4 w-4 mr-2" />
+              Задача
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Mini Calendar */}
@@ -240,6 +262,46 @@ export function CalendarSidebar() {
           )}
         </div>
       </div>
+
+      {/* Task Lists Section */}
+      <div className="px-4 pb-4">
+        <div className="mb-4">
+          <button
+            onClick={() => setIsTaskListsExpanded(!isTaskListsExpanded)}
+            className="flex items-center w-full text-left py-2 px-2 hover:bg-gray-50 rounded-md transition-colors"
+          >
+            {isTaskListsExpanded ? (
+              <ChevronDown className="h-4 w-4 text-gray-600 mr-2" />
+            ) : (
+              <ChevronRightSmall className="h-4 w-4 text-gray-600 mr-2" />
+            )}
+            <span className="text-sm font-medium text-gray-900">Задачи</span>
+          </button>
+
+          {isTaskListsExpanded && (
+            <div className="ml-6 mt-2 space-y-1">
+              {taskLists.map((list) => (
+                <div
+                  key={list.id}
+                  className="flex items-center py-1 px-2 hover:bg-gray-50 rounded-md group cursor-pointer"
+                  onClick={() => setTaskModalOpen(true)}
+                >
+                  <CheckSquare className="h-4 w-4 mr-3 text-gray-600" />
+                  <div
+                    className="w-3 h-3 rounded-sm mr-3 flex-shrink-0"
+                    style={{ backgroundColor: list.color }}
+                  />
+                  <span className="text-sm text-gray-700 flex-1">
+                    {list.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <TaskModal />
     </div>
   );
 }
