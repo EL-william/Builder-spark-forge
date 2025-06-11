@@ -21,14 +21,12 @@ export default function Calendar() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen bg-white flex flex-col overflow-hidden">
       <Navbar />
-      <div className="flex">
+      <div className="flex flex-1 overflow-hidden">
         <CalendarSidebar />
-        <main className="flex-1 p-6">
-          <CalendarGrid />
-          <EventModal />
-        </main>
+        <CalendarGrid />
+        <EventModal />
       </div>
     </div>
   );

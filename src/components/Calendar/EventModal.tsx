@@ -2,14 +2,10 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CalendarIcon, Clock, Trash2 } from "lucide-react";
+import { X, Clock, MapPin, Trash2, Edit3, Users, Copy } from "lucide-react";
 import { format } from "date-fns";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ru } from "date-fns/locale";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,19 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-store";
 import { CreateEventInput } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
 const eventSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  title: z.string().min(1, "Название обязательно"),
   description: z.string().optional(),
   startDate: z.date(),
   endDate: z.date(),
@@ -47,11 +37,19 @@ const eventSchema = z.object({
 type EventForm = z.infer<typeof eventSchema>;
 
 const categoryColors = {
-  work: "#3b82f6",
-  personal: "#10b981",
-  meeting: "#8b5cf6",
-  reminder: "#f59e0b",
-  other: "#6b7280",
+  work: "#7986cb",
+  personal: "#039be5",
+  meeting: "#33b679",
+  reminder: "#f6bf26",
+  other: "#f4511e",
+};
+
+const categoryLabels = {
+  work: "Работа",
+  personal: "Личные",
+  meeting: "Встречи",
+  reminder: "Напоминания",
+  other: "Другие",
 };
 
 export function EventModal() {
@@ -76,15 +74,14 @@ export function EventModal() {
     resolver: zodResolver(eventSchema),
     defaultValues: {
       allDay: false,
-      category: "other",
+      category: "personal",
       startDate: new Date(),
       endDate: new Date(),
     },
   });
 
   const allDay = watch("allDay");
-  const startDate = watch("startDate");
-  const endDate = watch("endDate");
+  const category = watch("category");
 
   useEffect(() => {
     if (selectedEvent) {
@@ -110,7 +107,7 @@ export function EventModal() {
         startTime: "09:00",
         endTime: "10:00",
         allDay: false,
-        category: "other",
+        category: "personal",
       });
     }
   }, [selectedEvent, reset]);
@@ -124,14 +121,14 @@ export function EventModal() {
     if (selectedEvent) {
       updateEvent({ ...eventData, id: selectedEvent.id });
       toast({
-        title: "Event updated",
-        description: "Your event has been updated successfully.",
+        title: "Мероприятие обновлено",
+        description: "Ваше мероприятие успешно обновлено.",
       });
     } else {
       addEvent(eventData);
       toast({
-        title: "Event created",
-        description: "Your event has been created successfully.",
+        title: "Мероприятие создано",
+        description: "Ваше мероприятие успешно создано.",
       });
     }
 
@@ -142,8 +139,8 @@ export function EventModal() {
     if (selectedEvent) {
       deleteEvent(selectedEvent.id);
       toast({
-        title: "Event deleted",
-        description: "Your event has been deleted.",
+        title: "Мероприятие удалено",
+        description: "Ваше мероприятие было удалено.",
       });
       setEventModalOpen(false);
     }
@@ -151,174 +148,196 @@ export function EventModal() {
 
   return (
     <Dialog open={isEventModalOpen} onOpenChange={setEventModalOpen}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>
-            {selectedEvent ? "Edit Event" : "Create New Event"}
-          </DialogTitle>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="title">Event Title</Label>
-            <Input
-              id="title"
-              placeholder="Enter event title"
-              {...register("title")}
-              className={errors.title ? "border-red-500" : ""}
+      <DialogContent className="sm:max-w-[540px] p-0 gap-0 overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b">
+          <div className="flex items-center space-x-4">
+            <div
+              className="w-6 h-6 rounded"
+              style={{ backgroundColor: categoryColors[category] }}
             />
-            {errors.title && (
-              <p className="mt-1 text-sm text-red-500">
-                {errors.title.message}
-              </p>
-            )}
+            <h2 className="text-lg font-medium">
+              {selectedEvent ? "Изменить мероприятие" : "Новое мероприятие"}
+            </h2>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setEventModalOpen(false)}
+            className="h-8 w-8 p-0 hover:bg-gray-100 rounded-full"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
 
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              placeholder="Enter event description (optional)"
-              {...register("description")}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="category">Category</Label>
-            <Select
-              value={watch("category")}
-              onValueChange={(value) => setValue("category", value as any)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="work">Work</SelectItem>
-                <SelectItem value="personal">Personal</SelectItem>
-                <SelectItem value="meeting">Meeting</SelectItem>
-                <SelectItem value="reminder">Reminder</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="allDay"
-              checked={allDay}
-              onCheckedChange={(checked) => setValue("allDay", checked)}
-            />
-            <Label htmlFor="allDay">All day event</Label>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+          <div className="px-6 py-4 space-y-6 flex-1">
+            {/* Title */}
             <div>
-              <Label>Start Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !startDate && "text-muted-foreground",
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? format(startDate, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    onSelect={(date) => date && setValue("startDate", date)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <Input
+                placeholder="Добавить название"
+                {...register("title")}
+                className="text-lg border-0 p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
+              />
+              {errors.title && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.title.message}
+                </p>
+              )}
             </div>
 
-            <div>
-              <Label>End Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !endDate && "text-muted-foreground",
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {endDate ? format(endDate, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={endDate}
-                    onSelect={(date) => date && setValue("endDate", date)}
-                    initialFocus
+            {/* Time section */}
+            <div className="flex items-start space-x-4">
+              <Clock className="h-5 w-5 text-gray-400 mt-3" />
+              <div className="flex-1 space-y-4">
+                {/* All day toggle */}
+                <div className="flex items-center space-x-3">
+                  <Switch
+                    id="allDay"
+                    checked={allDay}
+                    onCheckedChange={(checked) => setValue("allDay", checked)}
                   />
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-
-          {!allDay && (
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="startTime">Start Time</Label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="startTime"
-                    type="time"
-                    className="pl-10"
-                    {...register("startTime")}
-                  />
+                  <Label htmlFor="allDay" className="text-sm">
+                    Весь день
+                  </Label>
                 </div>
-              </div>
 
-              <div>
-                <Label htmlFor="endTime">End Time</Label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="endTime"
-                    type="time"
-                    className="pl-10"
-                    {...register("endTime")}
-                  />
+                {/* Date inputs */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Input
+                      type="date"
+                      {...register("startDate", {
+                        setValueAs: (value) =>
+                          value ? new Date(value) : new Date(),
+                      })}
+                      className="text-sm"
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      type="date"
+                      {...register("endDate", {
+                        setValueAs: (value) =>
+                          value ? new Date(value) : new Date(),
+                      })}
+                      className="text-sm"
+                    />
+                  </div>
                 </div>
+
+                {/* Time inputs (only if not all day) */}
+                {!allDay && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input
+                      type="time"
+                      {...register("startTime")}
+                      className="text-sm"
+                    />
+                    <Input
+                      type="time"
+                      {...register("endTime")}
+                      className="text-sm"
+                    />
+                  </div>
+                )}
               </div>
             </div>
-          )}
 
-          <div className="flex justify-between pt-4">
-            <div>
+            {/* Location */}
+            <div className="flex items-start space-x-4">
+              <MapPin className="h-5 w-5 text-gray-400 mt-3" />
+              <div className="flex-1">
+                <Input
+                  placeholder="Добавить место"
+                  className="border-0 p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
+                />
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="flex items-start space-x-4">
+              <Edit3 className="h-5 w-5 text-gray-400 mt-3" />
+              <div className="flex-1">
+                <Textarea
+                  placeholder="Добавить описание"
+                  {...register("description")}
+                  className="border-0 p-0 min-h-[60px] resize-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
+                />
+              </div>
+            </div>
+
+            {/* Category/Calendar */}
+            <div className="flex items-center space-x-4">
+              <div className="w-5 h-5" /> {/* Spacer */}
+              <div className="flex-1">
+                <Select
+                  value={category}
+                  onValueChange={(value) => setValue("category", value as any)}
+                >
+                  <SelectTrigger className="w-full border-0 p-0 h-auto focus:ring-0 focus:ring-offset-0">
+                    <div className="flex items-center space-x-2">
+                      <div
+                        className="w-4 h-4 rounded"
+                        style={{ backgroundColor: categoryColors[category] }}
+                      />
+                      <SelectValue />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(categoryLabels).map(([key, label]) => (
+                      <SelectItem key={key} value={key}>
+                        <div className="flex items-center space-x-2">
+                          <div
+                            className="w-3 h-3 rounded"
+                            style={{
+                              backgroundColor:
+                                categoryColors[
+                                  key as keyof typeof categoryColors
+                                ],
+                            }}
+                          />
+                          <span>{label}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between p-6 border-t bg-gray-50">
+            <div className="flex items-center space-x-2">
               {selectedEvent && (
                 <Button
                   type="button"
-                  variant="destructive"
+                  variant="ghost"
+                  size="sm"
                   onClick={handleDelete}
+                  className="text-gray-600 hover:text-red-600 h-9 px-3"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Event
+                  Удалить
                 </Button>
               )}
             </div>
 
-            <div className="flex space-x-2">
+            <div className="flex items-center space-x-3">
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
                 onClick={() => setEventModalOpen(false)}
+                className="h-9 px-4"
               >
-                Cancel
+                Отмена
               </Button>
-              <Button type="submit">
-                {selectedEvent ? "Update Event" : "Create Event"}
+              <Button
+                type="submit"
+                className="h-9 px-6 bg-blue-600 hover:bg-blue-700"
+              >
+                Сохранить
               </Button>
             </div>
           </div>

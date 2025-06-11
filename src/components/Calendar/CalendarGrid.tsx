@@ -1,25 +1,37 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-store";
 import { CalendarEvent } from "@/lib/types";
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAYS = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "Январь",
+  "Февраль",
+  "Март",
+  "Апрель",
+  "Май",
+  "Июнь",
+  "Июль",
+  "Август",
+  "Сентябрь",
+  "Октябрь",
+  "Ноябрь",
+  "Декабрь",
+];
+
+const VIEW_OPTIONS = [
+  { value: "day", label: "День" },
+  { value: "week", label: "Неделя" },
+  { value: "month", label: "Месяц" },
+  { value: "year", label: "Год" },
 ];
 
 export function CalendarGrid() {
@@ -74,12 +86,15 @@ export function CalendarGrid() {
     setView({ ...view, currentDate: newDate });
   };
 
+  const goToToday = () => {
+    const today = new Date();
+    setCurrentDate(today);
+    setView({ ...view, currentDate: today });
+  };
+
   const handleDayClick = (date: Date) => {
     const events = getEventsForDate(date);
-    if (events.length === 1) {
-      setSelectedEvent(events[0]);
-      setEventModalOpen(true);
-    } else if (events.length === 0) {
+    if (events.length === 0) {
       // Create new event for this date
       setSelectedEvent(null);
       setEventModalOpen(true);
@@ -94,66 +109,108 @@ export function CalendarGrid() {
 
   const getCategoryColor = (category: CalendarEvent["category"]) => {
     const colors = {
-      work: "bg-blue-500",
-      personal: "bg-green-500",
-      meeting: "bg-purple-500",
-      reminder: "bg-yellow-500",
-      other: "bg-gray-500",
+      work: "#7986cb",
+      personal: "#039be5",
+      meeting: "#33b679",
+      reminder: "#f6bf26",
+      other: "#f4511e",
     };
     return colors[category] || colors.other;
   };
 
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="flex-1 bg-white">
       {/* Calendar Header */}
-      <div className="flex items-center justify-between p-6 border-b">
-        <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-semibold text-gray-900">
-            {MONTHS[currentMonth]} {currentYear}
-          </h1>
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div className="flex items-center space-x-6">
+          {/* Navigation buttons */}
           <div className="flex items-center space-x-1">
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => navigateMonth("prev")}
+              className="h-10 w-10 p-0 hover:bg-gray-100 rounded-full"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-5 w-5 text-gray-600" />
             </Button>
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => navigateMonth("next")}
+              className="h-10 w-10 p-0 hover:bg-gray-100 rounded-full"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-5 w-5 text-gray-600" />
             </Button>
           </div>
+
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const today = new Date();
-              setCurrentDate(today);
-              setView({ ...view, currentDate: today });
-            }}
+            variant="ghost"
+            onClick={goToToday}
+            className="text-gray-700 hover:bg-gray-100 px-4 py-2 text-sm font-medium"
           >
-            Today
+            Сегодня
           </Button>
+
+          <h1 className="text-2xl font-normal text-gray-800">
+            {MONTHS[currentMonth]} {currentYear}
+          </h1>
         </div>
 
-        <Button onClick={() => setEventModalOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Event
-        </Button>
+        {/* View selector */}
+        <div className="flex items-center space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-10 px-4">
+                <span className="mr-2">Месяц</span>
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {VIEW_OPTIONS.map((option) => (
+                <DropdownMenuItem
+                  key={option.value}
+                  onClick={() =>
+                    setView({ ...view, type: option.value as any })
+                  }
+                >
+                  {option.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-10 w-10 p-0 hover:bg-gray-100 rounded-full"
+          >
+            <MoreHorizontal className="h-5 w-5 text-gray-600" />
+          </Button>
+        </div>
       </div>
 
       {/* Days of Week Header */}
-      <div className="grid grid-cols-7 border-b">
-        {DAYS.map((day) => (
+      <div className="grid grid-cols-7 border-b border-gray-200">
+        {DAYS.map((day, index) => (
           <div
             key={day}
-            className="p-3 text-sm font-medium text-gray-700 text-center"
+            className="p-4 text-xs font-medium text-gray-600 text-center border-r border-gray-100 last:border-r-0"
           >
-            {day}
+            <div className="text-gray-500 uppercase tracking-wider text-xs font-medium mb-1">
+              {day}
+            </div>
           </div>
         ))}
       </div>
@@ -173,17 +230,19 @@ export function CalendarGrid() {
               <div
                 key={`${weekIndex}-${dayIndex}`}
                 className={cn(
-                  "min-h-[120px] p-2 border-r border-b cursor-pointer hover:bg-gray-50 transition-colors",
-                  !isCurrentMonth && "bg-gray-50 text-gray-400",
+                  "min-h-[120px] p-2 border-r border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors relative",
+                  !isCurrentMonth && "bg-gray-50",
+                  "last:border-r-0",
                 )}
                 onClick={() => handleDayClick(date)}
               >
-                <div className="flex items-center justify-between mb-1">
+                {/* Date number */}
+                <div className="flex justify-between items-start mb-2">
                   <span
                     className={cn(
-                      "text-sm font-medium",
-                      isToday &&
-                        "bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs",
+                      "text-sm font-medium h-6 w-6 flex items-center justify-center rounded-full",
+                      isCurrentMonth ? "text-gray-900" : "text-gray-400",
+                      isToday && "bg-blue-600 text-white",
                     )}
                   >
                     {date.getDate()}
@@ -195,25 +254,23 @@ export function CalendarGrid() {
                   {dayEvents.slice(0, 3).map((event) => (
                     <div
                       key={event.id}
-                      className={cn(
-                        "text-xs p-1 rounded text-white cursor-pointer hover:opacity-80 transition-opacity",
-                        getCategoryColor(event.category),
-                      )}
+                      className="text-xs px-2 py-1 rounded text-white cursor-pointer hover:opacity-80 transition-opacity truncate"
+                      style={{
+                        backgroundColor: getCategoryColor(event.category),
+                      }}
                       onClick={(e) => handleEventClick(event, e)}
-                      title={event.title}
+                      title={`${event.startTime ? event.startTime + " " : ""}${event.title}`}
                     >
-                      <div className="truncate">
-                        {!event.allDay && event.startTime && (
-                          <span className="mr-1">{event.startTime}</span>
-                        )}
-                        {event.title}
-                      </div>
+                      {!event.allDay && event.startTime && (
+                        <span className="mr-1">{event.startTime}</span>
+                      )}
+                      {event.title}
                     </div>
                   ))}
 
                   {dayEvents.length > 3 && (
-                    <div className="text-xs text-gray-500 font-medium">
-                      +{dayEvents.length - 3} more
+                    <div className="text-xs text-gray-500 font-medium px-2">
+                      ещё {dayEvents.length - 3}
                     </div>
                   )}
                 </div>

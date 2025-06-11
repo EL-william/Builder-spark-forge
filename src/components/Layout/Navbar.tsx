@@ -1,5 +1,5 @@
-import { Calendar, LogOut, User, Plus } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Calendar, Menu, Settings, HelpCircle, Grid3x3 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,75 +9,142 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth";
-import { useCalendar } from "@/lib/calendar-store";
 
 export function Navbar() {
   const { user, logout } = useAuth();
-  const { setEventModalOpen } = useCalendar();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
-  const handleCreateEvent = () => {
-    setEventModalOpen(true);
-  };
 
   if (!user) return null;
 
   return (
-    <nav className="border-b bg-white shadow-sm">
-      <div className="flex h-16 items-center justify-between px-6">
-        <div className="flex items-center space-x-4">
-          <Link to="/" className="flex items-center space-x-2">
-            <Calendar className="h-6 w-6 text-blue-600" />
-            <span className="text-xl font-semibold text-gray-900">
+    <nav className="h-16 bg-white border-b border-gray-200 flex items-center px-6 relative z-50">
+      <div className="flex items-center w-full">
+        {/* Left section - Hamburger menu and Logo */}
+        <div className="flex items-center space-x-4 min-w-0 flex-shrink-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-2 hover:bg-gray-100 rounded-full"
+          >
+            <Menu className="h-5 w-5 text-gray-600" />
+          </Button>
+
+          <Link to="/" className="flex items-center space-x-3">
+            <Calendar className="h-6 w-6 text-gray-700" />
+            <span className="text-xl text-gray-700 font-normal hidden sm:block">
               Calendar
             </span>
           </Link>
         </div>
 
-        <div className="flex items-center space-x-4">
+        {/* Center section - Search */}
+        <div className="flex-1 max-w-2xl mx-8">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Поиск"
+              className="w-full h-12 pl-16 pr-4 bg-gray-50 border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+            <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+              <svg
+                className="h-5 w-5 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Right section - Settings, Help, Apps, Profile */}
+        <div className="flex items-center space-x-1">
           <Button
-            onClick={handleCreateEvent}
-            className="flex items-center space-x-2"
+            variant="ghost"
+            size="sm"
+            className="p-2 hover:bg-gray-100 rounded-full"
           >
-            <Plus className="h-4 w-4" />
-            <span>Create Event</span>
+            <HelpCircle className="h-5 w-5 text-gray-600" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-2 hover:bg-gray-100 rounded-full"
+          >
+            <Settings className="h-5 w-5 text-gray-600" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-2 hover:bg-gray-100 rounded-full"
+          >
+            <Grid3x3 className="h-5 w-5 text-gray-600" />
           </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Button
+                variant="ghost"
+                className="relative h-10 w-10 rounded-full hover:bg-gray-100 ml-2"
+              >
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback>
+                  <AvatarFallback className="bg-blue-600 text-white text-sm font-medium">
                     {user.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <div className="flex items-center justify-start gap-2 p-2">
-                <div className="flex flex-col space-y-1 leading-none">
-                  <p className="font-medium">{user.name}</p>
-                  <p className="w-[200px] truncate text-sm text-muted-foreground">
-                    {user.email}
-                  </p>
+            <DropdownMenuContent className="w-80 p-0" align="end" forceMount>
+              <div className="p-6 text-center border-b">
+                <Avatar className="h-20 w-20 mx-auto mb-4">
+                  <AvatarFallback className="bg-blue-600 text-white text-2xl font-medium">
+                    {user.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-lg font-medium text-gray-900">
+                  {user.name}
+                </div>
+                <div className="text-sm text-gray-600">{user.email}</div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-3 text-blue-600 border-blue-600 hover:bg-blue-50"
+                >
+                  Управление аккаунтом Google
+                </Button>
+              </div>
+
+              <div className="p-2">
+                <DropdownMenuItem className="h-12 px-4 text-gray-700 hover:bg-gray-50">
+                  Добавить ещё один аккаунт
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="h-12 px-4 text-gray-700 hover:bg-gray-50"
+                  onClick={logout}
+                >
+                  Выйти
+                </DropdownMenuItem>
+              </div>
+
+              <div className="p-4 border-t bg-gray-50 text-xs text-gray-600 text-center">
+                <div className="flex justify-center space-x-4">
+                  <a href="#" className="hover:text-gray-800">
+                    Конфиденциальность
+                  </a>
+                  <a href="#" className="hover:text-gray-800">
+                    Условия
+                  </a>
                 </div>
               </div>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
