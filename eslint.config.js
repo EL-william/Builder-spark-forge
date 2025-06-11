@@ -10,7 +10,10 @@ export default [
   {
     files: ["**/*.{js,mjs,cjs,ts,tsx}"],
     languageOptions: {
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.es2020,
+      },
       parser: tsparser,
       parserOptions: {
         ecmaVersion: "latest",
@@ -51,6 +54,21 @@ export default [
     settings: {
       react: {
         version: "detect",
+      },
+    },
+  },
+  {
+    files: ["**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}", "src/test/**/*"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.es2020,
+        vi: "readonly",
+        describe: "readonly",
+        it: "readonly",
+        expect: "readonly",
+        beforeEach: "readonly",
+        afterEach: "readonly",
       },
     },
   },

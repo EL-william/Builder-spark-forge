@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +19,7 @@ const MONTHS = [
   "Март",
   "Апрель",
   "Май",
-  "Ию��ь",
+  "Июнь",
   "Июль",
   "Август",
   "Сентябрь",
@@ -56,7 +56,6 @@ export function CalendarGrid() {
 
   // Get first day of the month and calculate how many days from previous month to show
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-  const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
   const startDate = new Date(firstDayOfMonth);
   startDate.setDate(startDate.getDate() - firstDayOfMonth.getDay());
 
@@ -232,7 +231,7 @@ export function CalendarGrid() {
       {/* Calendar Grid */}
       <div className="grid grid-cols-7">
         {calendarDays.map((week, weekIndex) =>
-          week.map((date, dayIndex) => {
+          week.map((date, _dayIndex) => {
             const isCurrentMonth = date.getMonth() === currentMonth;
             const isToday =
               date.getDate() === today.getDate() &&
