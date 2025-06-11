@@ -62,6 +62,14 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Calendar-specific colors
+        calendar: {
+          work: "#3b82f6",
+          personal: "#10b981",
+          meeting: "#8b5cf6",
+          reminder: "#f59e0b",
+          other: "#6b7280",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -89,6 +97,12 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      gridTemplateColumns: {
+        calendar: "repeat(7, minmax(0, 1fr))",
+      },
+      minHeight: {
+        "calendar-day": "120px",
       },
     },
   },
