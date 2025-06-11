@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { subscribeWithSelector, persist } from "zustand/middleware";
 import {
   CalendarEvent,
   CreateEventInput,
