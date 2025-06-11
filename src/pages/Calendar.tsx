@@ -5,6 +5,7 @@ import { CalendarGrid } from "@/components/Calendar/CalendarGrid";
 import { CalendarSidebar } from "@/components/Calendar/CalendarSidebar";
 import { EventModal } from "@/components/Calendar/EventModal";
 import { useAuth } from "@/lib/auth";
+import styles from "./Calendar.module.scss";
 
 export default function Calendar() {
   const { isAuthenticated } = useAuth();
@@ -17,16 +18,22 @@ export default function Calendar() {
   }, [isAuthenticated, navigate]);
 
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+      </div>
+    );
   }
 
   return (
-    <div className="h-screen bg-white flex flex-col overflow-hidden">
+    <div className={styles.calendarContainer}>
       <Navbar />
-      <div className="flex flex-1 overflow-hidden">
+      <div className={styles.calendarLayout}>
         <CalendarSidebar />
-        <CalendarGrid />
-        <EventModal />
+        <main className={styles.calendarMain}>
+          <CalendarGrid />
+          <EventModal />
+        </main>
       </div>
     </div>
   );

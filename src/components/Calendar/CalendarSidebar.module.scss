@@ -1,0 +1,483 @@
+// Calendar Sidebar Component Styles
+.sidebarContainer {
+  width: 256px;
+  background-color: #ffffff;
+  height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid #e5e7eb;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+}
+
+.createSection {
+  padding: 24px 24px 16px 24px;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+.createButton {
+  width: 100%;
+  background-color: #2563eb;
+  color: #ffffff;
+  border-radius: 56px;
+  height: 56px;
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1d4ed8;
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    height: 20px;
+    width: 20px;
+  }
+
+  @media (max-width: 768px) {
+    height: 48px;
+    font-size: 14px;
+
+    svg {
+      height: 18px;
+      width: 18px;
+    }
+  }
+}
+
+.miniCalendarSection {
+  padding: 0 16px 24px 16px;
+
+  @media (max-width: 768px) {
+    padding: 0 16px 16px 16px;
+  }
+}
+
+.miniCalendarContainer {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #ffffff;
+}
+
+.miniCalendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.miniCalendarTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.miniCalendarNav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.miniNavButton {
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f3f4f6;
+  }
+
+  svg {
+    height: 16px;
+    width: 16px;
+    color: #6b7280;
+  }
+}
+
+.miniCalendarGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.miniCalendarWeek {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0;
+}
+
+.miniDayHeader {
+  font-size: 11px;
+  color: #6b7280;
+  text-align: center;
+  padding: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.miniDay {
+  height: 32px;
+  width: 32px;
+  font-size: 12px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  margin: 0 auto;
+
+  &:hover {
+    background-color: #f3f4f6;
+  }
+
+  &.currentMonth {
+    color: #111827;
+  }
+
+  &.otherMonth {
+    color: #9ca3af;
+  }
+
+  &.today {
+    background-color: #2563eb;
+    color: #ffffff;
+
+    &:hover {
+      background-color: #1d4ed8;
+    }
+  }
+
+  &.selected {
+    background-color: #dbeafe;
+    color: #2563eb;
+
+    &:hover {
+      background-color: #bfdbfe;
+    }
+  }
+}
+
+.sectionContainer {
+  padding: 0 16px;
+  margin-bottom: 16px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 12px;
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease-in-out;
+  border: none;
+  background-color: transparent;
+  margin-bottom: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
+
+  svg {
+    height: 16px;
+    width: 16px;
+    color: #6b7280;
+    margin-right: 8px;
+    transition: transform 0.15s ease-in-out;
+  }
+
+  &.expanded svg {
+    transform: rotate(90deg);
+  }
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.sectionList {
+  margin-left: 24px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease-in-out;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  text-align: left;
+  position: relative;
+  group: true;
+
+  &:hover {
+    background-color: #f9fafb;
+
+    .listItemMenu {
+      opacity: 1;
+    }
+  }
+}
+
+.listItemCheckbox {
+  margin-right: 12px;
+  accent-color: var(--item-color);
+}
+
+.listItemColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  background-color: var(--item-color);
+}
+
+.listItemLabel {
+  font-size: 14px;
+  color: #374151;
+  flex: 1;
+  text-align: left;
+}
+
+.listItemMenu {
+  height: 24px;
+  width: 24px;
+  padding: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+  opacity: 0;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #e5e7eb;
+  }
+
+  &::before {
+    content: "⋮";
+    color: #6b7280;
+    font-size: 12px;
+  }
+}
+
+// Task list specific styles
+.taskListItem {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
+
+  svg {
+    height: 16px;
+    width: 16px;
+    margin-right: 12px;
+    color: #6b7280;
+  }
+}
+
+.taskListColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.taskListLabel {
+  font-size: 14px;
+  color: #374151;
+  flex: 1;
+}
+
+// Dropdown menu styles
+.dropdownTrigger {
+  width: 100%;
+  background-color: #2563eb;
+  color: #ffffff;
+  border-radius: 56px;
+  height: 56px;
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1d4ed8;
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.dropdownContent {
+  width: 192px;
+
+  @media (max-width: 768px) {
+    width: 160px;
+  }
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+
+  svg {
+    height: 16px;
+    width: 16px;
+    margin-right: 8px;
+  }
+}
+
+// Scrollbar styling
+.sidebarContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebarContainer::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.sidebarContainer::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+
+  &:hover {
+    background: #94a3b8;
+  }
+}
+
+// Animation for collapsing sections
+.sectionList {
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+
+  &.collapsed {
+    max-height: 0;
+    margin-top: 0;
+  }
+
+  &.expanded {
+    max-height: 500px;
+  }
+}
+
+// Focus states for accessibility
+.createButton:focus,
+.miniDay:focus,
+.sectionHeader:focus,
+.listItem:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .sidebarContainer {
+    background-color: #1f2937;
+    border-right-color: #374151;
+  }
+
+  .miniCalendarContainer {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+
+  .miniCalendarTitle,
+  .sectionTitle,
+  .listItemLabel {
+    color: #f9fafb;
+  }
+
+  .miniDayHeader {
+    color: #d1d5db;
+  }
+
+  .miniDay {
+    color: #f9fafb;
+
+    &.otherMonth {
+      color: #6b7280;
+    }
+
+    &:hover {
+      background-color: #374151;
+    }
+  }
+
+  .sectionHeader:hover,
+  .listItem:hover {
+    background-color: #374151;
+  }
+}

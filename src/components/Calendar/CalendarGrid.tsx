@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { useCalendar } from "@/lib/calendar-store";
 import { CalendarEvent } from "@/lib/types";
 import { WeeklyView } from "./WeeklyView";
+import styles from "./CalendarGrid.module.scss";
 
 const DAYS = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 const MONTHS = [
@@ -112,61 +113,44 @@ export function CalendarGrid() {
     setEventModalOpen(true);
   };
 
-  const getCategoryColor = (category: CalendarEvent["category"]) => {
-    const colors = {
-      work: "#7986cb",
-      personal: "#039be5",
-      meeting: "#33b679",
-      reminder: "#f6bf26",
-      other: "#f4511e",
-    };
-    return colors[category] || colors.other;
+  const getCategoryClass = (category: CalendarEvent["category"]) => {
+    return styles[category] || styles.other;
   };
 
   return (
-    <div className="flex-1 bg-white">
+    <div className={styles.calendarContainer}>
       {/* Calendar Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center space-x-6">
-          {/* Navigation buttons */}
-          <div className="flex items-center space-x-1">
-            <Button
-              variant="ghost"
-              size="sm"
+      <div className={styles.calendarHeader}>
+        <div className={styles.headerLeft}>
+          <div className={styles.navigationButtons}>
+            <button
+              className={styles.navButton}
               onClick={() => navigateMonth("prev")}
-              className="h-10 w-10 p-0 hover:bg-gray-100 rounded-full"
             >
-              <ChevronLeft className="h-5 w-5 text-gray-600" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
+              <ChevronLeft />
+            </button>
+            <button
+              className={styles.navButton}
               onClick={() => navigateMonth("next")}
-              className="h-10 w-10 p-0 hover:bg-gray-100 rounded-full"
             >
-              <ChevronRight className="h-5 w-5 text-gray-600" />
-            </Button>
+              <ChevronRight />
+            </button>
           </div>
 
-          <Button
-            variant="ghost"
-            onClick={goToToday}
-            className="text-gray-700 hover:bg-gray-100 px-4 py-2 text-sm font-medium"
-          >
+          <button className={styles.todayButton} onClick={goToToday}>
             Сегодня
-          </Button>
+          </button>
 
-          <h1 className="text-2xl font-normal text-gray-800">
+          <h1 className={styles.calendarTitle}>
             {MONTHS[currentMonth]} {currentYear}
           </h1>
         </div>
 
-        {/* View selector */}
-        <div className="flex items-center space-x-2">
+        <div className={styles.headerRight}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="h-10 px-4">
-                <span className="mr-2">
+              <div className={styles.viewSelector}>
+                <span>
                   {view.type === "month"
                     ? "Месяц"
                     : view.type === "week"
@@ -175,12 +159,7 @@ export function CalendarGrid() {
                         ? "День"
                         : "Год"}
                 </span>
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -188,7 +167,7 @@ export function CalendarGrid() {
                     d="M19 9l-7 7-7-7"
                   />
                 </svg>
-              </Button>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {VIEW_OPTIONS.map((option) => (
@@ -204,32 +183,23 @@ export function CalendarGrid() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-10 w-10 p-0 hover:bg-gray-100 rounded-full"
-          >
-            <MoreHorizontal className="h-5 w-5 text-gray-600" />
-          </Button>
+          <button className={styles.moreButton}>
+            <MoreHorizontal />
+          </button>
         </div>
       </div>
 
       {/* Days of Week Header */}
-      <div className="grid grid-cols-7 border-b border-gray-200">
-        {DAYS.map((day, index) => (
-          <div
-            key={day}
-            className="p-4 text-xs font-medium text-gray-600 text-center border-r border-gray-100 last:border-r-0"
-          >
-            <div className="text-gray-500 uppercase tracking-wider text-xs font-medium mb-1">
-              {day}
-            </div>
+      <div className={styles.daysHeader}>
+        {DAYS.map((day, _index) => (
+          <div key={day} className={styles.dayHeader}>
+            <div className={styles.dayName}>{day}</div>
           </div>
         ))}
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7">
+      <div className={styles.calendarGrid}>
         {calendarDays.map((week, weekIndex) =>
           week.map((date, _dayIndex) => {
             const isCurrentMonth = date.getMonth() === currentMonth;
@@ -243,46 +213,43 @@ export function CalendarGrid() {
               <div
                 key={`${weekIndex}-${_dayIndex}`}
                 className={cn(
-                  "min-h-[120px] p-2 border-r border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors relative",
-                  !isCurrentMonth && "bg-gray-50",
-                  "last:border-r-0",
+                  styles.dayCell,
+                  !isCurrentMonth && styles.otherMonth,
                 )}
                 onClick={() => handleDayClick(date)}
               >
                 {/* Date number */}
-                <div className="flex justify-between items-start mb-2">
+                <div className={styles.dayHeader}>
                   <span
-                    className={cn(
-                      "text-sm font-medium h-6 w-6 flex items-center justify-center rounded-full",
-                      isCurrentMonth ? "text-gray-900" : "text-gray-400",
-                      isToday && "bg-blue-600 text-white",
-                    )}
+                    className={cn(styles.dayNumber, isToday && styles.today)}
                   >
                     {date.getDate()}
                   </span>
                 </div>
 
                 {/* Events */}
-                <div className="space-y-1">
+                <div className={styles.dayEvents}>
                   {dayEvents.slice(0, 3).map((event) => (
                     <div
                       key={event.id}
-                      className="text-xs px-2 py-1 rounded text-white cursor-pointer hover:opacity-80 transition-opacity truncate"
-                      style={{
-                        backgroundColor: getCategoryColor(event.category),
-                      }}
+                      className={cn(
+                        styles.event,
+                        getCategoryClass(event.category),
+                      )}
                       onClick={(e) => handleEventClick(event, e)}
                       title={`${event.startTime ? event.startTime + " " : ""}${event.title}`}
                     >
                       {!event.allDay && event.startTime && (
-                        <span className="mr-1">{event.startTime}</span>
+                        <span className={styles.eventTime}>
+                          {event.startTime}
+                        </span>
                       )}
                       {event.title}
                     </div>
                   ))}
 
                   {dayEvents.length > 3 && (
-                    <div className="text-xs text-gray-500 font-medium px-2">
+                    <div className={styles.moreEvents}>
                       ещё {dayEvents.length - 3}
                     </div>
                   )}
