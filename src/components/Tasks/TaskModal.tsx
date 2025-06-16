@@ -34,7 +34,7 @@ const taskSchema = z.object({
   dueDate: z.date().optional(),
   dueTime: z.string().optional(),
   priority: z.enum(["low", "medium", "high"]),
-  list: z.string().min(1, "Выберите список"),
+  list: z.string().min(1, "��ыберите список"),
 });
 
 type TaskForm = z.infer<typeof taskSchema>;
@@ -120,7 +120,7 @@ export function TaskModal() {
     if (selectedTask) {
       deleteTask(selectedTask.id);
       toast({
-        title: "Задача удалена",
+        title: "Задача уда��ена",
         description: "Ваша задача была удалена.",
       });
       setTaskModalOpen(false);
@@ -206,10 +206,12 @@ export function TaskModal() {
                             !dueDate && "text-muted-foreground",
                           )}
                         >
-                          <Calendar className="mr-2 h-4 w-4" />
-                          {dueDate
-                            ? format(dueDate, "d MMMM", { locale: ru })
-                            : "Выбрать дату"}
+                          <span className="flex items-center">
+                            <Calendar className="mr-2 h-4 w-4" />
+                            {dueDate
+                              ? format(dueDate, "d MMMM", { locale: ru })
+                              : "Выбрать дату"}
+                          </span>
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
