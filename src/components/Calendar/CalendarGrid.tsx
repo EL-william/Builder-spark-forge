@@ -151,26 +151,24 @@ export function CalendarGrid() {
 
         <div className={styles.headerRight}>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className={styles.viewSelector}>
-                <span>
-                  {view.type === "month"
-                    ? "Месяц"
-                    : view.type === "week"
-                      ? "Неделя"
-                      : view.type === "day"
-                        ? "День"
-                        : "Год"}
-                </span>
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
+            <DropdownMenuTrigger className={styles.viewSelector}>
+              <span>
+                {view.type === "month"
+                  ? "Месяц"
+                  : view.type === "week"
+                    ? "Неделя"
+                    : view.type === "day"
+                      ? "День"
+                      : "Год"}
+              </span>
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {VIEW_OPTIONS.map((option) => (
