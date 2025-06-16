@@ -89,7 +89,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{events.length}</div>
-              <p className="text-xs text-muted-foreground">В календаре</p>
+              <p className="text-xs text-muted-foreground">В календ��ре</p>
             </CardContent>
           </Card>
 
@@ -113,8 +113,10 @@ export default function Dashboard() {
           <div className="flex flex-wrap gap-4">
             <Button asChild>
               <Link to="/calendar">
-                <Calendar className="h-4 w-4 mr-2" />
-                Открыть календарь
+                <span className="flex items-center">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Открыть календарь
+                </span>
               </Link>
             </Button>
             <Button variant="outline" asChild>
