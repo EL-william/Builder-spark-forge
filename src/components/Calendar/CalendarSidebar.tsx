@@ -117,11 +117,9 @@ export function CalendarSidebar() {
       {/* Create button */}
       <div className={styles.createSection}>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className={styles.createButton}>
-              <Plus />
-              Создать
-            </button>
+          <DropdownMenuTrigger className={styles.createButton}>
+            <Plus />
+            Создать
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className={styles.dropdownContent}>
             <DropdownMenuItem
