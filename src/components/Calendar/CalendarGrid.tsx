@@ -152,7 +152,7 @@ export function CalendarGrid() {
         <div className={styles.headerRight}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className={styles.viewSelector}>
+              <button className={styles.viewSelector}>
                 <span>
                   {view.type === "month"
                     ? "Месяц"
@@ -170,7 +170,7 @@ export function CalendarGrid() {
                     d="M19 9l-7 7-7-7"
                   />
                 </svg>
-              </div>
+              </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {VIEW_OPTIONS.map((option) => (
